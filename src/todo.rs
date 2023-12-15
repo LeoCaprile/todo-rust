@@ -58,7 +58,46 @@ mod tests {
             description: String::from("desc")
         });
 
-        assert_eq!(todo_store.todos.len(), 1)
+        assert_eq!(todo_store.todos.len(), 1);
+
+    }
+    #[test]
+    fn can_list_all_todos_from_todo_store() {
+        let mut todo_store = TodoStore::new();
+
+        todo_store.add_todo(Todo {
+            id: 0,
+            title: String::from("title"),
+            description: String::from("desc")
+        });
+
+        todo_store.add_todo(Todo {
+            id: 1,
+            title: String::from("title2"),
+            description: String::from("desc2")
+        });
+
+        assert_eq!(todo_store.todos.len(), 2);
+
+        assert_eq!(todo_store.get_all_todos().len(), 2)
+
+    }
+
+    #[test]
+    fn can_delete_todo_from_todo_store() {
+        let mut todo_store = TodoStore::new();
+
+        todo_store.add_todo(Todo {
+            id: 0,
+            title: String::from("title"),
+            description: String::from("desc")
+        });
+
+        assert_eq!(todo_store.todos.len(), 1);
+
+        todo_store.delete_todo(0);
+
+        assert_eq!(todo_store.todos.len(), 0);
 
     }
 }

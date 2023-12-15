@@ -76,7 +76,7 @@ impl Console {
     }
 
     pub fn remove_todo_result(&self, result: bool) {
-        if(result){
+        if result {
             println!("--Todo removed with success!------");
             println!("----------------------------------");
         } else {
