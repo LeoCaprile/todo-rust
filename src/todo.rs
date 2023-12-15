@@ -1,9 +1,8 @@
-use crate::get_user_input;
-
-struct Todo {
-    id: usize,
-    title: String,
-    description: String
+#[derive(Debug)]
+pub struct Todo {
+    pub id: usize,
+    pub title: String,
+    pub description: String
 }
 
 pub struct TodoStore {
@@ -12,89 +11,54 @@ pub struct TodoStore {
 
 impl TodoStore {
 
-    pub fn new() -> TodoStore {
+    pub fn new() -> Self {
         TodoStore { todos: vec![] }
     }
-    pub fn show_all_todos(&self){
-
-        if self.todos.len() > 0 {
-            println!("----------------------------------");
-            println!("-----------List of Todos----------");
-            println!("----------------------------------");
-            self.todos.iter().for_each(|todo| {
-                println!("id: {}", todo.id);
-                println!("title: {}", todo.title);
-                println!("description: {}", todo.description);
-                println!("----------------------------------");
-            });
-
-            println!("----Press any key to go back-----");
-
-            let _ = get_user_input();
-            return;
-        }
-        println!("----------------------------------");
-        println!("---------------Empty--------------");
-        println!("----------------------------------");
-        println!("----Press any key to go back-----");
-
-        let _ = get_user_input();
+    pub fn get_all_todos(&self) -> &Vec<Todo> {
+        &self.todos
     }
 
-    pub fn delete_todo(&mut self) {
-        println!("----------------------------------");
-        println!("---------Removing a todo----------");
-        println!("--Provide the id  to remove-------");
-
-        let user_provided_id = match get_user_input().trim().parse::<usize>() {
-            Ok(id) => {
-                println!("the id to remove is {id}");
-                id
-            },
-            Err(_) => {
-                println!("The provided id must be a number");
-                return;
-            }
-        };
-
+    pub fn delete_todo(&mut self, id: usize) -> bool {
 
         match self.todos.iter().position(|todo| {
-            todo.id == user_provided_id
+            todo.id == id
         }) {
-            None => {
-                println!("The provided id doesn't exist in the list.");
-                println!("----------------------------------");
-
-            }
+            None => false,
             Some(index) => {
                 self.todos.remove(index);
-                println!("--Todo removed with success!------");
-                println!("----------------------------------");
+                true
             }
         }
 
     }
 
-    pub fn add_todo(&mut self){
-        println!("----------------------------------");
-        println!("---------Adding a todo------------");
-        println!("--Provide a title-----------------");
-        let title = get_user_input().trim().to_string();
-        println!("--Provide a description-----------");
-        let description = get_user_input().trim().to_string();
-        println!("----------------------------------");
-        let index = self.todos.len();
-
-        let todo_to_add = Todo {
-            id: index,
-            title,
-            description,
-        };
-
-        self.todos.insert(index, todo_to_add);
-        println!("--Todo added with success!--------");
-        println!("----------------------------------");
-
+    pub fn add_todo(&mut self, todo_to_add: Todo){
+        self.todos.insert(todo_to_add.id, todo_to_add);
     }
 
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::todo::{Todo, TodoStore};
+
+    #[test]
+    fn can_instantiate_todo_store() {
+        let todo_store = TodoStore::new();
+        assert_eq!(todo_store.todos.len(), 0);
+    }
+
+    #[test]
+    fn can_add_todo_to_todo_store() {
+        let mut todo_store = TodoStore::new();
+
+        todo_store.add_todo(Todo {
+            id: 0,
+            title: String::from("title"),
+            description: String::from("desc")
+        });
+
+        assert_eq!(todo_store.todos.len(), 1)
+
+    }
 }
